@@ -1,5 +1,6 @@
 # Crout-matrix-decomposition
-This shows how to perform crout matrix decomposition using serial and parallelised programs using threads(OpenMP) and processes(MPI). 
+The Crout matrix decomposition is an LU decomposition that decomposes a matrix into a lower triangular matrix (L`), an upper triangular matrix (U) and, although not always needed, a permutation matrix (P). It was developed by Prescott Durand Crout. Crout method returns a lower triangular matrix and a unit upper triangular matrix.
+This project shows how to perform crout matrix decomposition using serial and parallelised programs using threads(OpenMP) and processes(MPI). 
 ###### Inputs:
 1. n: number of rows and columns of the square matrix
 2. f: filename that contains an n*n matrix (A)
