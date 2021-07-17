@@ -44,78 +44,46 @@ int main(int argc, char *argv[])
    for(int i=0; i<n; i++){
      U[i] = malloc(n * sizeof(double*));
    }
-
- int i, j, k;
- double sum = 0;
- #pragma omp parallel for num_threads(t)
- for (int i = 0; i < n; i++) {
-    U[i][i] = 1;
-   }
-
- for (j = 0; j < n; j++) {
-   for (int i = j; i < n; i++) {
-       sum = 0;
-       #pragma omp parallel for num_threads(t)
-       for (int k = 0; k < j; k++) {
-           double v = L[i][k] * U[k][j];
-           #pragma omp critical
-           {sum = sum + v;}
-       }
-       #pragma omp barrier
-       L[i][j] = A[i][j] - sum;
-   }
-
-   for (int i = j; i < n; i++) {
-     sum = 0;
-
-     #pragma omp  sections
-     {
-       #pragma omp  section
-       {
-         double s = 0;
-         for (int k = 0; k < j/4 ; k++) {
-             s = s + L[j][k] * U[k][i];
-         }
-         #pragma omp critical
-           {sum= sum + s;}
-       }
-
-       #pragma omp  section
-       {
-         double s = 0;
-         for (int k = j/4; k < 2*j/4; k++) {
-           s=s+ L[j][k] * U[k][i];
-         }
-         #pragma omp critical
-           {sum = sum + s;}
-       }
-
-       #pragma omp  section
-       {
-         double s = 0;
-         for (int k = 2*j/4; k < 3*j/4; k++) {
-             s=s+ L[j][k] * U[k][i];
-         }
-         #pragma omp critical
-         sum = sum + s;
-       }
-
-       #pragma omp  section
-       {
-         double s = 0;
-         for (int k = 3*j/4; k < 4*j/4; k++) {
-             s= s + L[j][k] * U[k][i];
-         }
-         #pragma omp critical
-         sum = sum + s;
-       }
-     }
-       if (L[j][j] == 0) {
-           exit(0);
-       }
-       U[j][i] = (A[j][i] - sum) / L[j][j];
-   }
- }
+#pragma omp parallel for num_threads(T)
+	for (int i = 0; i < n; i++) {
+		U[i][i] = 1;
+	}
+	for (int j = 0; j < n; j++) {
+        double sum1 = 0;
+		for (int k = 0; k < j; k++) {
+			sum1 = sum1 + L[j][k] * U[k][j];	
+		}
+		L[j][j] = A[j][j] - sum1;
+		U[j][j] = (A[j][j] - sum1) / L[j][j];
+		#pragma omp parallel sections
+		{
+			#pragma omp section
+			{
+			#pragma omp parallel for num_threads(T/2)
+			for (int i = j+1; i < n; i++) {
+				double sum = 0;
+				for (int k = 0; k < j; k++) {
+					sum = sum + L[i][k] * U[k][j];	
+				}
+				L[i][j] = A[i][j] - sum;
+			}
+			}
+			#pragma omp section
+			{#pragma omp parallel for num_threads(T/2)
+			for (int i = j+1; i < n; i++) {
+				double sum = 0;
+				for(int k = 0; k < j; k++) {
+					sum = sum + L[j][k] * U[k][i];
+				}
+				if (L[j][j] == 0) {				
+					exit(0);
+				}
+				U[j][i] = (A[j][i] - sum) / L[j][j];
+			}
+			}
+		}
+	}
+ 
  char fname1[50];
  sprintf(fname1, "U.txt", s,t);
  write_output(fname1, U, n );
