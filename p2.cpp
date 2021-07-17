@@ -97,10 +97,10 @@ int n = atoi(argv[1]);
     }
  
  char fname1[100];
-sprintf(fname1, "output_U_%d_%d.txt", strat,t);
+sprintf(fname1, "U.txt", strat,t);
 write_output(fname1, U, n );
 char fname2[100];
-sprintf(fname2, "output_L_%d_%d.txt", strat,t);
+sprintf(fname2, "L.txt", strat,t);
 write_output(fname2, L, n ); 
 MPI_Finalize(); 
 return 0;
