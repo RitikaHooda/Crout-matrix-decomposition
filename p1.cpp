@@ -117,9 +117,9 @@ int main(int argc, char *argv[])
    }
  }
  char fname1[50];
- sprintf(fname1, "output_U_%d_%d.txt", s,t);
+ sprintf(fname1, "U.txt", s,t);
  write_output(fname1, U, n );
  char fname2[50];
- sprintf(fname2, "output_L_%d_%d.txt", s,t);
+ sprintf(fname2, "L", s,t);
  write_output(fname2, L, n );
   }
