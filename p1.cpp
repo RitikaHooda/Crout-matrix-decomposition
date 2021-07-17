@@ -120,6 +120,6 @@ int main(int argc, char *argv[])
  sprintf(fname1, "U.txt", s,t);
  write_output(fname1, U, n );
  char fname2[50];
- sprintf(fname2, "L", s,t);
+ sprintf(fname2, "L.txt", s,t);
  write_output(fname2, L, n );
   }
